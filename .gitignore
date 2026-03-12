@@ -27,6 +27,7 @@ dist/
 build/
 *.spec.bak
 .venv/
+packages/
 
 # Patches (offline update용)
 patches/

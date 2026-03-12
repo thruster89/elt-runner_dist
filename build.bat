@@ -2,11 +2,17 @@
 setlocal EnableDelayedExpansion
 set /p APP_VER=<VERSION
 if "!APP_VER!"=="" set APP_VER=0.0
-title ELT Runner v!APP_VER! - Build
+
+:: 오프라인 모드 판별: packages\ 폴더가 있으면 오프라인
+set OFFLINE=0
+if exist packages\ set OFFLINE=1
+if !OFFLINE!==1 (set MODE=Offline) else (set MODE=Online)
+
+title ELT Runner v!APP_VER! - Build (!MODE!)
 
 echo.
 echo  =====================================================
-echo    ELT Runner v!APP_VER!  --  Windows EXE Build
+echo    ELT Runner v!APP_VER!  --  Windows EXE Build (!MODE!)
 echo  =====================================================
 echo.
 
@@ -30,8 +36,14 @@ if not exist .venv (
 call .venv\Scripts\activate.bat
 
 echo [2/5] Installing dependencies ...
-pip install -r requirements.txt -q
-pip install pyinstaller -q
+if !OFFLINE!==1 (
+    pip install --no-index --find-links=packages -r requirements.txt -q
+    pip install --no-index --find-links=packages pyinstaller -q
+    echo       Done. ^(offline: packages\^)
+) else (
+    pip install -r requirements.txt -q
+    pip install pyinstaller -q
+)
 
 echo [3/5] Cleaning previous build ...
 if exist dist  rmdir /s /q dist

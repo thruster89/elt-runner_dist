@@ -10,9 +10,13 @@ function Err($m)    { Write-Host "[ERROR] $m" -ForegroundColor Red; Read-Host; e
 $AppVer = (Get-Content "$PSScriptRoot\VERSION" -ErrorAction SilentlyContinue).Trim()
 if (-not $AppVer) { $AppVer = "0.0" }
 
+# 오프라인 모드 판별: packages/ 폴더가 있으면 오프라인
+$Offline = Test-Path "packages"
+if ($Offline) { $Mode = "Offline" } else { $Mode = "Online" }
+
 Write-Host ""
 Write-Host " =====================================================" -ForegroundColor Cyan
-Write-Host "   ELT Runner v$AppVer  --  PowerShell EXE Build"      -ForegroundColor Cyan
+Write-Host "   ELT Runner v$AppVer  --  PowerShell EXE Build ($Mode)" -ForegroundColor Cyan
 Write-Host " =====================================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -25,9 +29,15 @@ else { OK ".venv exists, skipping." }
 & .\.venv\Scripts\Activate.ps1
 
 Step 2 "Dependencies"
-pip install -r requirements.txt --quiet
-pip install pyinstaller --quiet
-OK "Done."
+if ($Offline) {
+    pip install --no-index --find-links=packages -r requirements.txt --quiet
+    pip install --no-index --find-links=packages pyinstaller --quiet
+    OK "Done. (offline: packages/)"
+} else {
+    pip install -r requirements.txt --quiet
+    pip install pyinstaller --quiet
+    OK "Done."
+}
 
 Step 3 "Clean"
 "dist","build" | Where-Object { Test-Path $_ } | ForEach-Object { Remove-Item $_ -Recurse -Force }
