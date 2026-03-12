@@ -22,6 +22,12 @@ plan_report.json
 # Sensitive config (contains passwords)
 config/env.yml
 
+# Build artifacts
+dist/
+build/
+*.spec.bak
+.venv/
+
 # Patches (offline update용)
 patches/
 

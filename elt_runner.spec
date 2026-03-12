@@ -11,6 +11,7 @@ datas = [
     ("jobs",    "jobs"),
     ("sql",     "sql"),
     ("config",  "config"),
+    ("fonts",   "fonts"),
 ]
 
 hiddenimports = [
@@ -35,7 +36,12 @@ a = Analysis(
     hiddenimports=hiddenimports,
     hookspath=[],
     runtime_hooks=["rthook_workdir.py"],
-    excludes=["matplotlib", "numpy", "scipy", "PIL", "IPython", "pytest", "setuptools", "pip"],
+    excludes=[
+        "matplotlib", "numpy", "scipy", "PIL", "IPython",
+        "pytest", "setuptools", "pip", "distutils",
+        "unittest", "doctest", "pdb", "profile", "cProfile",
+        "tkinter.test", "test",
+    ],
     cipher=block_cipher,
     noarchive=False,
 )
