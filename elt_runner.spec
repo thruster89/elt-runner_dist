@@ -11,7 +11,6 @@ datas = [
     ("jobs",    "jobs"),
     ("sql",     "sql"),
     ("config",  "config"),
-    ("fonts",   "fonts"),
 ]
 
 hiddenimports = [
