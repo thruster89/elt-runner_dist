@@ -1,0 +1,42 @@
+job_name: job_oracle
+pipeline:
+  stages:
+  - export
+  - load_local
+  - transform
+  - report
+source:
+  type: oracle
+  host: local
+export:
+  sql_dir: sql/export/test
+  out_dir: data/export/test
+  overwrite: true
+  parallel_workers: 1
+  compression: gzip
+  csv_name_style: full
+  csv_strip_prefix: false
+  format: csv
+load:
+  mode: replace
+target:
+  type: duckdb
+  db_path: data/local/result.duckdb
+  schema: MYDATAMART
+transform:
+  sql_dir: sql/transform/duckdb
+  on_error: continue
+  schema: MYDATAMART
+report:
+  source: target
+  export_csv:
+    enabled: true
+    sql_dir: sql/report
+    out_dir: data/report
+  excel:
+    enabled: true
+    out_dir: data/report
+    max_files: 10
+  csv_union_dir: .
+params:
+  clsYymm: 202303:202412~1
